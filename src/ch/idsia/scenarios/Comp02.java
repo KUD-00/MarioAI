@@ -37,7 +37,7 @@ public class Comp02 {
         marioAIOptions.setHiddenBlocksCount(true); // 隠しブロック
         marioAIOptions.setHillStraightCount(true); // 丘
 
-        int seed = 2;
+        int seed = 3;
         marioAIOptions.setLevelRandSeed(seed); // ステージシード
 
         final BasicTask basicTask = new BasicTask(marioAIOptions);

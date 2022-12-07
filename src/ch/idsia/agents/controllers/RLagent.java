@@ -24,7 +24,7 @@ public class RLagent extends BasicMarioAIAgent implements Agent {
     Properties properties = new Properties();
     private HashMap<String, HashMap<String, Double>> QTable = new HashMap<String, HashMap<String, Double>>();
     private String lastEnvString = "";
-    private boolean[] lastAction = {false, false, false, false, false, false};
+    private boolean[] lastAction = {false, true, false, false, false, false};
     private boolean isInit = false;
     private HashMap<String, Double> lastStatusMap = new HashMap<String, Double>() {
         {
@@ -133,10 +133,14 @@ public class RLagent extends BasicMarioAIAgent implements Agent {
     private double bellmanEquation(String state, String stateNext, boolean[] action, double reward) {
         double learningRate = 0.3;
         double gamma = 0.2;
-        double bestActionQValue = QTable.get(stateNext).get(getBestAction(stateNext));
-        double newQValue = (1 - learningRate) * QTable.get(state).get(action) +
-                learningRate * (reward + gamma * bestActionQValue);
-        return 0;
+        if (QTable.containsKey(stateNext) && QTable.containsKey(state) && QTable.get(state).containsKey(action)) {
+            double bestActionQValue = QTable.get(stateNext).get(action2string(getBestAction(stateNext)));
+            double newQValue = (1 - learningRate) * QTable.get(state).get(action) +
+                    learningRate * (reward + gamma * bestActionQValue);
+            return newQValue;
+        } else {
+            return reward;
+        }
     }
 
     private boolean[] getBestAction(String envString) {
@@ -162,7 +166,7 @@ public class RLagent extends BasicMarioAIAgent implements Agent {
         return statusMap;
     }
 
-    private double getQValue(HashMap<String, Double> lastStatusMap, HashMap<String, Double> nowStatusMap) {
+    private double getReward(HashMap<String, Double> lastStatusMap, HashMap<String, Double> nowStatusMap) {
         double QValue = 0.0;
         if (lastStatusMap.get("MarioStatus") > nowStatusMap.get("MarioStatus")) {
             QValue -= 100;
@@ -207,12 +211,15 @@ public class RLagent extends BasicMarioAIAgent implements Agent {
     private boolean[] init() {
         initQTable();
         boolean[] noAction = { false, false, false, false, false, false };
+        boolean[] goRight = { false, true, false, false, false, false };
         while(!isMarioOnGround) {
             return noAction;
         }
         lastEnvString = getEnvStringRoutine();
+        lastAction = goRight;
+        lastStatusMap = getStatusMap();
         isInit = true;
-        return noAction;
+        return goRight;
     }
     
     private void writeQTable() {
@@ -233,21 +240,15 @@ public class RLagent extends BasicMarioAIAgent implements Agent {
     }
 
     private String getEnvStringRoutine() {
-        return getEnvString(marioEgoRow - 2, marioEgoCol, marioEgoRow + 2, marioEgoCol + 2);
+        return getEnvString(marioEgoRow - 2, marioEgoCol, marioEgoRow + 1, marioEgoCol + 1);
     }
 
     public boolean[] getAction() {
         if(!isInit) return init();
 
-        if(frame < 30) {
-            boolean[] action = {false, true, false, false, false, false};
-            this.frame++;
-            return action;
-        }
-
-        if (frame % 10 == 0) writeQTable();
+        if (frame % 20 == 0) writeQTable();
         
-        if (frame % 6 != 0) {
+        if (frame % 4 != 0) {
             frame += 1;
             return lastAction;
         } else {
@@ -256,13 +257,15 @@ public class RLagent extends BasicMarioAIAgent implements Agent {
 
         String nowEnvString = getEnvStringRoutine();
 
-        double QValue = getQValue(lastStatusMap, getStatusMap());
+        double reward = getReward(lastStatusMap, getStatusMap());
 
-        updateQTable(lastEnvString, action, QValue);
+        double Q_Value = bellmanEquation(lastEnvString,nowEnvString,lastAction,reward);
+
+        updateQTable(lastEnvString, action, Q_Value);
 
         Random rand = new Random();
         double double_random = rand.nextDouble();
-        if (double_random < 0.1) { // epsilon
+        if (double_random < 0.2) { // epsilon
             // System.out.println("Random action");
             action = getRandomAction();
         } else {
