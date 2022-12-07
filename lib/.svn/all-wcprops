@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 27
+/svn/!svn/ver/759/trunk/lib
+END
+asm-all-3.3.jar
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/!svn/ver/759/trunk/lib/asm-all-3.3.jar
+END
+jdom.jar
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/svn/!svn/ver/108/trunk/lib/jdom.jar
+END
+junit-4.8.2.jar
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/!svn/ver/451/trunk/lib/junit-4.8.2.jar
+END

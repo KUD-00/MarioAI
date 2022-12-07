@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 23
+/svn/!svn/ver/764/trunk
+END
+LICENSE.txt
+K 25
+svn:wc:ra_dav:version-url
+V 35
+/svn/!svn/ver/638/trunk/LICENSE.txt
+END
+trunk.xml
+K 25
+svn:wc:ra_dav:version-url
+V 33
+/svn/!svn/ver/645/trunk/trunk.xml
+END
+UpdateLog.txt
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/!svn/ver/638/trunk/UpdateLog.txt
+END
+build.properties
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/!svn/ver/756/trunk/build.properties
+END
+trunk.properties
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/!svn/ver/645/trunk/trunk.properties
+END
+build.xml
+K 25
+svn:wc:ra_dav:version-url
+V 33
+/svn/!svn/ver/756/trunk/build.xml
+END
