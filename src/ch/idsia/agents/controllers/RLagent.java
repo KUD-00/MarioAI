@@ -26,6 +26,8 @@ public class RLagent extends BasicMarioAIAgent implements Agent {
     private String lastEnvString = "";
     private boolean[] lastAction = {false, true, false, false, false, false};
     private boolean isInit = false;
+    private boolean[] noAction = {false, false, false, false, false, false};
+    private boolean isJump = false;
     private HashMap<String, Double> lastStatusMap = new HashMap<String, Double>() {
         {
             put("MarioStatus", 2.0);
@@ -98,6 +100,7 @@ public class RLagent extends BasicMarioAIAgent implements Agent {
     }
 
     private void updateQTable(String envString, boolean[] action, Double qValue) {
+        if (qValue < 30) {return;}
         if(!QTable.containsKey(envString)) {
             HashMap<String, Double> temp = new HashMap<String, Double>();
             temp.put(action2string(action), qValue);
@@ -132,7 +135,7 @@ public class RLagent extends BasicMarioAIAgent implements Agent {
 
     private double bellmanEquation(String state, String stateNext, boolean[] action, double reward) {
         double learningRate = 0.3;
-        double gamma = 0.2;
+        double gamma = 0.1;
         if (QTable.containsKey(stateNext) && QTable.containsKey(state) && QTable.get(state).containsKey(action)) {
             double bestActionQValue = QTable.get(stateNext).get(action2string(getBestAction(stateNext)));
             double newQValue = (1 - learningRate) * QTable.get(state).get(action) +
@@ -208,12 +211,19 @@ public class RLagent extends BasicMarioAIAgent implements Agent {
         }
     }
 
+    private boolean[] releaseJumpButton(boolean[] action) {
+        if (isJump && isMarioOnGround && action[3] == true) {
+            action[3] = false;
+            isJump = false;
+        }
+        return action;
+    }
+
     private boolean[] init() {
         initQTable();
-        boolean[] noAction = { false, false, false, false, false, false };
         boolean[] goRight = { false, true, false, false, false, false };
         while(!isMarioOnGround) {
-            return noAction;
+            return this.noAction;
         }
         lastEnvString = getEnvStringRoutine();
         lastAction = goRight;
@@ -240,7 +250,7 @@ public class RLagent extends BasicMarioAIAgent implements Agent {
     }
 
     private String getEnvStringRoutine() {
-        return getEnvString(marioEgoRow - 2, marioEgoCol, marioEgoRow + 1, marioEgoCol + 1);
+        return getEnvString(marioEgoRow - 3, marioEgoCol - 1, marioEgoRow + 1, marioEgoCol + 2);
     }
 
     public boolean[] getAction() {
@@ -250,9 +260,7 @@ public class RLagent extends BasicMarioAIAgent implements Agent {
         
         if (frame % 4 != 0) {
             frame += 1;
-            return lastAction;
-        } else {
-            frame += 1;
+            return this.lastAction;
         }
 
         String nowEnvString = getEnvStringRoutine();
@@ -266,12 +274,18 @@ public class RLagent extends BasicMarioAIAgent implements Agent {
         Random rand = new Random();
         double double_random = rand.nextDouble();
         if (double_random < 0.2) { // epsilon
-            // System.out.println("Random action");
+            //System.out.println("Random action");
             action = getRandomAction();
         } else {
-            // System.out.println("Best action");
+            //System.out.println("Best action");
             this.action = getBestAction(nowEnvString);
         }
+
+        if (action[3] == true && !isMarioOnGround) {
+            isJump = true;
+        }
+
+        releaseJumpButton(action);
 
         this.lastEnvString = nowEnvString;
         this.lastAction = this.action;

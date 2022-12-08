@@ -22,7 +22,7 @@ public class Comp02 {
         // ステージの設定
         marioAIOptions.setVisualization(true); // ゲーム描画の有無
         marioAIOptions.setGameViewer(false);
-        marioAIOptions.setFPS(12);
+        marioAIOptions.setFPS(24);
         marioAIOptions.setLevelDifficulty(0); // 難易度
         marioAIOptions.setLevelType(0); // ステージ
         marioAIOptions.setLevelLength(256); // 長さ
@@ -37,7 +37,7 @@ public class Comp02 {
         marioAIOptions.setHiddenBlocksCount(true); // 隠しブロック
         marioAIOptions.setHillStraightCount(true); // 丘
 
-        int seed = 3;
+        int seed = 8;
         marioAIOptions.setLevelRandSeed(seed); // ステージシード
 
         final BasicTask basicTask = new BasicTask(marioAIOptions);

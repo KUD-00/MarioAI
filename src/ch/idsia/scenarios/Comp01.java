@@ -20,10 +20,13 @@ public final class Comp01 {
         marioAIOptions.setAgent(agent);
 
         // ステージの設定
-        marioAIOptions.setLevelDifficulty(1); // 難易度
+
+        marioAIOptions.setVisualization(false); // ゲーム描画の有無
+        marioAIOptions.setFPS(96);
+        marioAIOptions.setLevelDifficulty(0); // 難易度
         marioAIOptions.setLevelType(1); // ステージ
         marioAIOptions.setLevelLength(256); // 長さ
-        marioAIOptions.setEnemies("g"); // 敵の種類
+        marioAIOptions.setEnemies("off"); // 敵の種類
 
         marioAIOptions.setDeadEndsCount(false); // 行き止まり
         marioAIOptions.setCannonsCount(true); // キラー
@@ -32,11 +35,10 @@ public final class Comp01 {
         marioAIOptions.setBlocksCount(true); // ブロック
         marioAIOptions.setCoinsCount(true); // コイン
         marioAIOptions.setHiddenBlocksCount(true); // 隠しブロック
-        marioAIOptions.setHillStraightCount(true); // 丘
+        marioAIOptions.setHillStraightCount(false); // 丘
 
-        marioAIOptions.setVisualization(false); // ゲーム描画OFF
         int goalNum = 0;
-        int N = 1;
+        int N = 50;
         int fitnessSum = 0;
 
         for (int i = 100; i > N; i--) {
